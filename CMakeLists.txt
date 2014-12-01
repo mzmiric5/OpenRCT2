@@ -1,47 +1,12 @@
-cmake_minimum_required(VERSION 2.6)
+cmake_minimum_required(VERSION 3.0 FATAL_ERROR)
+set(CMAKE_LEGACY_CYGWIN_WIN32 0)
 
-# project title
-set (PROJECT openrct2)
-# OpenRCT2 resource directory
-set (ORCT2_RESOURCE_DIR ${CMAKE_INSTALL_PREFIX}/share/${PROJECT}/)
+project(openrct2)
 
-project(${PROJECT})
-
-add_definitions(-DORCT2_RESOURCE_DIR="${ORCT2_RESOURCE_DIR}")
-add_definitions(-DHAVE_CONFIG_H)
-
-# include lib
-include_directories("lib/")
-# include speex header
-include_directories("lib/libspeex/")
 # add source files
-file(GLOB_RECURSE ORCT2_SOURCES "src/platform/*.c")
 
-if (UNIX)
-	# force 32bit build for now and set necessary flags to compile code as is
-	set(CMAKE_C_FLAGS "-m32 -std=gnu99")
-	set(CMAKE_LDFLAGS_FLAGS "-m32")
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
-	# find and include SDL2
-	INCLUDE(FindPkgConfig)
-	PKG_SEARCH_MODULE(SDL2 REQUIRED sdl2)
-	INCLUDE_DIRECTORIES(${SDL2_INCLUDE_DIRS})
-endif (UNIX)
+# add_subdirectory(src)
 
-LINK_DIRECTORIES(${SDL2_LIBRARY_DIRS})
-
-# build as library for now, replace with add_executable
-add_library(${PROJECT} SHARED ${ORCT2_SOURCES})
-
-# install into ${CMAKE_INSTALL_PREFIX}/bin/
-#install (TARGETS ${PROJECT} DESTINATION bin)
-
-# libopenrct2.dll -> openrct2.dll
-set_target_properties(${PROJECT} PROPERTIES PREFIX "")
-
-TARGET_LINK_LIBRARIES(${PROJECT} ${SDL2_LIBRARIES})
-
-if (WIN32)
-	target_link_libraries(${PROJECT} winmm.lib -limm32 -lversion -ldsound)
-endif (WIN32)
-
+add_executable(openrct2 src/platform/osx.c)

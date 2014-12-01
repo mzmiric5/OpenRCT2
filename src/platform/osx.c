@@ -18,15 +18,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *****************************************************************************/
 
+#include <stdio.h>
+
 #ifdef __APPLE__
 
 /**
  * OSX entry point to OpenRCT2.
  */
-// int main(char *argv[], int argc)
-// {
-//     return 0;
-// }
+int main(int argc, char *argv[])
+{
+    printf("Hello OpenRCT2\n");
+    return 0;
+}
 
 char platform_get_path_separator()
 {
