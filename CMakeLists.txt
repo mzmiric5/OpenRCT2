@@ -15,7 +15,7 @@ include_directories("lib/")
 # include speex header
 include_directories("lib/libspeex/")
 # add source files
-file(GLOB_RECURSE ORCT2_SOURCES "src/*.c" "src/*.cpp" "lib/*.c")
+file(GLOB_RECURSE ORCT2_SOURCES "src/platform/*.c")
 
 if (UNIX)
 	# force 32bit build for now and set necessary flags to compile code as is
