@@ -1420,7 +1420,7 @@ enum {
 	STR_TWITCH_CHAT_NEWS = 5173,
 	STR_TWITCH_CHAT_NEWS_TIP = 5174,
 	STR_TWITCH_NAME_DESC = 5175,
-
+	STR_TWITCH_ENABLE = 5176,
 
 	// Have to include resource strings (from scenarios and objects) for the time being now that language is partially working
 	STR_COUNT = 32768

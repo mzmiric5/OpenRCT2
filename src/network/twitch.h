@@ -3,6 +3,8 @@
 
 #include "../common.h"
 
+extern bool gTwitchEnable;
+
 void twitch_update();
 
 #endif

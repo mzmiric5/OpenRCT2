@@ -1,5 +1,6 @@
 #include <stdarg.h>
 #include <SDL_scancode.h>
+
 #include "../addresses.h"
 #include "../drawing/drawing.h"
 #include "../localisation/localisation.h"
@@ -12,10 +13,10 @@
 #include "../input.h"
 #include "../network/twitch.h"
 #include "../object.h"
-#include "console.h"
-#include "window.h"
 #include "../world/scenery.h"
 #include "../management/research.h"
+#include "console.h"
+#include "window.h"
 
 #define CONSOLE_BUFFER_SIZE 8192
 #define CONSOLE_BUFFER_2_SIZE 256
@@ -641,7 +642,7 @@ static int cc_twitch(const char **argv, int argc)
 #ifdef DISABLE_TWITCH
 	console_writeline_error("OpenRCT2 build not compiled with Twitch integeration.");
 #else
-	// twitch_update_peeps();
+	// TODO add some twitch commands
 #endif
 	return 0;
 }

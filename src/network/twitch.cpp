@@ -37,10 +37,14 @@ enum {
 	TWITCH_STATE_LEFT
 };
 
-#define PULSE_TIME (30 * 1000)
+// The time between HTTP requests.
+// TODO Ideally, the chat message pulse should be more frequent than the followers / chat members so that news messages etc.
+// have a lower latency.
+#define PULSE_TIME (10 * 1000)
 
-const char *TwitchBaseUrl = "https://api.twitch.tv/kraken/";
 const char *TwitchExtendedBaseUrl = "http://openrct.ursalabs.co/api/1/";
+
+bool gTwitchEnable = false;
 
 static int _twitchState = TWITCH_STATE_LEFT;
 static bool _twitchIdle = true;
@@ -62,11 +66,14 @@ void twitch_update()
 	if (!_twitchIdle)
 		return;
 
-	if (!(RCT2_GLOBAL(RCT2_ADDRESS_SCREEN_FLAGS, uint8) & (~SCREEN_FLAGS_PLAYING))) {
-		if (RCT2_GLOBAL(RCT2_ADDRESS_GAME_PAUSED, uint8) != 0)
-			return;
+	bool twitchable =
+		!(RCT2_GLOBAL(RCT2_ADDRESS_SCREEN_FLAGS, uint8) & (~SCREEN_FLAGS_PLAYING)) &&
+		gConfigTwitch.channel != NULL &&
+		gConfigTwitch.channel[0] != 0 &&
+		gTwitchEnable;
 
-		if (gConfigTwitch.channel == NULL || gConfigTwitch.channel[0] == 0)
+	if (twitchable) {
+		if (RCT2_GLOBAL(RCT2_ADDRESS_GAME_PAUSED, uint8) != 0)
 			return;
 
 		switch (_twitchState) {
@@ -147,13 +154,19 @@ static void twitch_join()
  */
 static void twitch_leave()
 {
-	if (_twitchJsonResponse != NULL)
+	if (_twitchJsonResponse != NULL) {
 		http_request_json_dispose(_twitchJsonResponse);
+		_twitchJsonResponse = NULL;
+	}
 
 	console_writeline("Left twitch channel.");
 	_twitchState = TWITCH_STATE_LEFT;
 	_twitchLastPulseTick = 0;
+	gTwitchEnable = false;
 
+	// TODO reset all peeps with twitch flag
+
+	// HTTP request no longer used as it could be abused
 	// char url[256];
 	// sprintf(url, "%sleave/%s", TwitchExtendedBaseUrl, gConfigTwitch.channel);
 	// _twitchState = TWITCH_STATE_LEAVING;
@@ -281,9 +294,11 @@ static void twitch_parse_followers()
 						peep->flags &= ~(PEEP_FLAGS_TRACKING | PEEP_FLAGS_TWITCH);
 
 						// TODO set peep name back to number / real name
-					} else if (!member->shouldTrack) {
-						// Member no longer tracked
-						peep->flags &= ~(PEEP_FLAGS_TRACKING);
+					} else {
+						if (member->shouldTrack)
+							peep->flags |= (PEEP_FLAGS_TRACKING);
+						else if (!member->shouldTrack)
+							peep->flags &= ~(PEEP_FLAGS_TRACKING);
 					}
 				} else if (member != NULL && !(peep->flags & PEEP_FLAGS_LEAVING_PARK)) {
 					// Peep with same name already exists but not twitch
@@ -401,6 +416,8 @@ static void twitch_parse_chat_message(const char *message)
 			strncpy(buffer + 1, ch, sizeof(buffer) - 2);
 			buffer[sizeof(buffer) - 2] = 0;
 
+			// Remove unsupport characters
+			// TODO allow when OpenRCT2 gains unicode support
 			ch = buffer;
 			while (ch[0] != 0) {
 				if ((unsigned char)ch[0] < 32 || (unsigned char)ch[0] > 122) {
@@ -409,6 +426,7 @@ static void twitch_parse_chat_message(const char *message)
 				ch++;
 			}
 
+			// TODO Create a new news item type for twitch which has twitch icon
 			news_item_add_to_queue_raw(NEWS_ITEM_BLANK, buffer, 0);
 		}
 	}
