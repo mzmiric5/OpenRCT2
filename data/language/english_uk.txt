@@ -3683,3 +3683,6 @@ STR_5346    :Guest cheats
 STR_5347    :Ride cheats
 STR_5348    :Park cheats
 STR_5349    :{SMALLFONT}{BLACK}All Rides
+STR_5350	:Twitch Integration Options
+STR_5351	:Log in with Twtich
+STR_5352	:{SMALLFONT}{BLACK}Authenticate the game with your Twitch account to enable Twitch features

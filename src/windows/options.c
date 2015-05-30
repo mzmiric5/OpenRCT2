@@ -551,7 +551,7 @@ static void window_options_mouseup()
 	case WINDOW_OPTIONS_PAGE_TWITCH:
 		switch (widgetIndex) {
 		case WIDX_CHANNEL_BUTTON:
-			window_text_input_raw_open(w, widgetIndex, STR_TWITCH_NAME, STR_TWITCH_NAME_DESC, gConfigTwitch.channel, 32);
+			window_twitch_open();
 			break;
 		case WIDX_FOLLOWER_PEEP_NAMES_CHECKBOX:
 			gConfigTwitch.enable_follower_peep_names ^= 1;
@@ -971,8 +971,8 @@ static void window_options_dropdown()
 				else if (dropdownIndex == 1) gConfigGeneral.title_sequence = TITLE_SEQUENCE_OPENRCT2;
 				config_save_default();
 				window_invalidate(w);
-			}
-			break;
+		}
+		break;
 		}
 		break;
 

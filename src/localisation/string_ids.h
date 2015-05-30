@@ -1520,6 +1520,10 @@ enum {
 	STR_TITLE_SEQUENCE_OPENRCT2 = 5309,
 	STR_TITLE_SEQUENCE_RANDOM = 5310,
 
+	STR_TWITCH_WINDOW_TITLE = 5350,
+	STR_TWITCH_AUTH = 5351,
+	STR_TWITCH_AUTH_TIP = 5352,
+
 	// Have to include resource strings (from scenarios and objects) for the time being now that language is partially working
 	STR_COUNT = 32768
 };
