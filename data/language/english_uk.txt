@@ -3497,7 +3497,7 @@ STR_5160    :{MONTH} {STRINGID}, Year {COMMA16}
 STR_5161    :Date Format:
 STR_5162    :Day/Month/Year
 STR_5163    :Month/Day/Year
-STR_5164    :Twitch Channel name
+STR_5164    :Twitch Integration Options
 STR_5165    :Name peeps after followers
 STR_5166    :{SMALLFONT}{BLACK}Will name peeps after channel's Twitch followers
 STR_5167    :Track follower peeps
@@ -3508,7 +3508,7 @@ STR_5171    :Track chat peeps
 STR_5172    :{SMALLFONT}{BLACK}Will turn on tracking information for guests named after Twitch chat participants
 STR_5173    :Pull Twitch chat as news
 STR_5174    :{SMALLFONT}{BLACK}Will use Twitch chat messages preceded by !news for in game notifications
-STR_5175    :Input the name of your Twitch channel
+STR_5175    :Login with your Twitch account.
 STR_5176    :Enable Twitch integration
 STR_5177    :Fullscreen mode:
 STR_5178    :{SMALLFONT}{BLACK}Show financial cheats
@@ -3684,5 +3684,5 @@ STR_5347    :Ride cheats
 STR_5348    :Park cheats
 STR_5349    :{SMALLFONT}{BLACK}All Rides
 STR_5350	:Twitch Integration Options
-STR_5351	:Log in with Twtich
+STR_5351	:Log in with Twitch
 STR_5352	:{SMALLFONT}{BLACK}Authenticate the game with your Twitch account to enable Twitch features

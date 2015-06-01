@@ -23,12 +23,14 @@
 #include "../sprites.h"
 #include "../interface/widget.h"
 #include "../interface/window.h"
+#include "../config.h"
 
 enum window_twitch_WIDGET_IDX {
 	WIDX_BACKGROUND,
 	WIDX_TITLE,
 	WIDX_CLOSE,
-	WIDX_TWITCH_AUTH
+	WIDX_TWITCH_AUTH, 
+	WINDOW_TWITCH_WIDGETS_SIZE
 };
 
 rct_widget window_twitch_widgets[] = {
@@ -42,6 +44,8 @@ rct_widget window_twitch_widgets[] = {
 static void window_twitch_emptysub() { }
 static void window_twitch_mouseup();
 static void window_twitch_paint();
+static void window_twitch_invalidate();
+static void window_twitch_text_input();
 
 static void* window_twitch_events[] = {
 	window_twitch_emptysub,
@@ -63,13 +67,13 @@ static void* window_twitch_events[] = {
 	window_twitch_emptysub,
 	window_twitch_emptysub,
 	window_twitch_emptysub,
+	window_twitch_text_input,
 	window_twitch_emptysub,
 	window_twitch_emptysub,
 	window_twitch_emptysub,
 	window_twitch_emptysub,
 	window_twitch_emptysub,
-	window_twitch_emptysub,
-	window_twitch_emptysub,
+	window_twitch_invalidate,
 	window_twitch_paint,
 	window_twitch_emptysub
 };
@@ -114,9 +118,14 @@ static void window_twitch_mouseup()
 
 	window_widget_get_registers(w, widgetIndex);
 
+	utf8string testString = "test";
+
 	switch (widgetIndex) {
 	case WIDX_CLOSE:
 		window_close(w);
+		break;
+	case WIDX_TWITCH_AUTH:
+		window_multi_text_input_raw_open(w, widgetIndex, STR_TWITCH_AUTH, STR_TWITCH_NAME_DESC, gConfigTwitch.channel, 32, false, testString, 32, true);
 		break;
 	}
 }
@@ -140,9 +149,33 @@ static void window_twitch_paint()
 
 	gfx_draw_sprite(dpi, SPR_G2_TAB_TWITCH, x, y, 0);
 
-	x = w->x + 280;
-	y = w->y + 315;
+	x = w->x + 300;
+	y = w->y + 230;
 
-	gfx_draw_string_left(dpi, STR_TWITCH_POWERDBY, NULL, 12, x, y);
+	gfx_draw_sprite(dpi, SPR_G2_PROMO_UL, x, y, 0);
 
+}
+
+static void window_twitch_text_input(){
+	short widgetIndex;
+	rct_window *w;
+	char _cl;
+	char* text;
+
+	//just a stub
+}
+
+static void window_twitch_invalidate()
+{
+	rct_window *w;
+	int i;
+	sint32 currentSoundDevice;
+
+	//just a stub
+
+	window_get_register(w);
+
+	/*for (i = WIDX_TWITCH_AUTH; i < WINDOW_TWITCH_WIDGETS_SIZE; i++) {
+		window_twitch_widgets[i].type = WWT_EMPTY;
+	}*/
 }

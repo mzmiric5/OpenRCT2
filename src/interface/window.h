@@ -415,6 +415,7 @@ enum {
 	WC_TILE_INSPECTOR = 120,
 	WC_CHANGELOG = 121,
 	WC_TWITCH = 122,
+	WC_MULTI_TEXTINPUT = 123,
 
 	// Only used for colour schemes
 	WC_STAFF = 220,
@@ -581,6 +582,8 @@ void window_themes_open();
 void window_tile_inspector_open();
 void window_text_input_open(rct_window* call_w, int call_widget, rct_string_id title, rct_string_id description, rct_string_id existing_text, uint32 existing_args, int maxLength);
 void window_text_input_raw_open(rct_window* call_w, int call_widget, rct_string_id title, rct_string_id description, utf8string existing_text, int maxLength);
+void window_multi_text_input_open(rct_window* call_w, int call_widget, rct_string_id title, rct_string_id description, rct_string_id existing_text, uint32 existing_args, int maxLength, bool isPass, rct_string_id existing_text2, uint32 existing_args2, int maxLength2, bool isPass2);
+void window_multi_text_input_raw_open(rct_window* call_w, int call_widget, rct_string_id title, rct_string_id description, utf8string existing_text, int maxLength, bool isPass, utf8string existing_text2, int maxLength2, bool isPass2);
 rct_window *window_mapgen_open();
 rct_window *window_loadsave_open(int type, char *defaultName);
 rct_window *window_changelog_open();
