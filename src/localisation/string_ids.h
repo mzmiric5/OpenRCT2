@@ -1523,6 +1523,8 @@ enum {
 	STR_TWITCH_WINDOW_TITLE = 5350,
 	STR_TWITCH_AUTH = 5351,
 	STR_TWITCH_AUTH_TIP = 5352,
+    STR_TWITCH_DEAUTH = 5353,
+    STR_TWITCH_DEAUTH_TIP = 5354,
 
 	// Have to include resource strings (from scenarios and objects) for the time being now that language is partially working
 	STR_COUNT = 32768

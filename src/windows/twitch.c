@@ -29,7 +29,8 @@ enum window_twitch_WIDGET_IDX {
 	WIDX_BACKGROUND,
 	WIDX_TITLE,
 	WIDX_CLOSE,
-	WIDX_TWITCH_AUTH, 
+	WIDX_TWITCH_AUTH,
+    WIDX_TWITCH_DEAUTH,
 	WINDOW_TWITCH_WIDGETS_SIZE
 };
 
@@ -37,7 +38,8 @@ rct_widget window_twitch_widgets[] = {
 	{ WWT_FRAME, 0, 0, 399, 0, 329, 0x0FFFFFFFF, STR_NONE },				// panel / background
 	{ WWT_CAPTION, 0, 1, 398, 1, 14, STR_TWITCH_WINDOW_TITLE, STR_WINDOW_TITLE_TIP },	// title bar
 	{ WWT_CLOSEBOX, 0, 387, 397, 2, 13, STR_CLOSE_X, STR_CLOSE_WINDOW_TIP },	// close x button
-	{ WWT_DROPDOWN_BUTTON, 1, 100, 299, 53, 64, STR_TWITCH_AUTH, STR_TWITCH_AUTH_TIP },				// twitch auth
+	{ WWT_DROPDOWN_BUTTON, 1, 100, 299, 53, 64, STR_TWITCH_AUTH, STR_TWITCH_AUTH_TIP },		// twitch auth
+    { WWT_DROPDOWN_BUTTON, 1, 100, 299, 53, 64, STR_TWITCH_DEAUTH, STR_TWITCH_DEAUTH_TIP },	// twitch deauth
 	{ WIDGETS_END },
 };
 
@@ -77,6 +79,8 @@ static void* window_twitch_events[] = {
 	window_twitch_paint,
 	window_twitch_emptysub
 };
+
+utf8string password;
 
 /**
 *
@@ -118,14 +122,14 @@ static void window_twitch_mouseup()
 
 	window_widget_get_registers(w, widgetIndex);
 
-	utf8string testString = "test";
+    password = "";
 
 	switch (widgetIndex) {
 	case WIDX_CLOSE:
 		window_close(w);
 		break;
 	case WIDX_TWITCH_AUTH:
-		window_multi_text_input_raw_open(w, widgetIndex, STR_TWITCH_AUTH, STR_TWITCH_NAME_DESC, gConfigTwitch.channel, 32, false, testString, 32, true);
+		window_multi_text_input_raw_open(w, widgetIndex, STR_TWITCH_AUTH, STR_TWITCH_NAME_DESC, gConfigTwitch.channel, 32, false, password, 32, true);
 		break;
 	}
 }
@@ -166,6 +170,9 @@ static void window_twitch_text_input(){
 
 	char *userName = multi_text_input;
 	char *password = multi_text_input2;
+
+    log_error(userName);
+    log_error(password);
 }
 
 static void window_twitch_invalidate()
@@ -173,6 +180,8 @@ static void window_twitch_invalidate()
 	rct_window *w;
 
 	window_get_register(w);
+
+    window_twitch_widgets[WIDX_TWITCH_DEAUTH].type = WWT_EMPTY;
 
 	/*for (i = WIDX_TWITCH_AUTH; i < WINDOW_TWITCH_WIDGETS_SIZE; i++) {
 		window_twitch_widgets[i].type = WWT_EMPTY;

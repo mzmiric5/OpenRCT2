@@ -6,5 +6,7 @@
 extern bool gTwitchEnable;
 
 void twitch_update();
+void twitch_login();
+void twitch_logout();
 
 #endif

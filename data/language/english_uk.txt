@@ -3686,3 +3686,5 @@ STR_5349    :{SMALLFONT}{BLACK}All Rides
 STR_5350	:Twitch Integration Options
 STR_5351	:Log in with Twitch
 STR_5352	:{SMALLFONT}{BLACK}Authenticate the game with your Twitch account to enable Twitch features
+STR_5353	:Logout from Twitch
+STR_5354	:{SMALLFONT}{BLACK}Remove Twitch authorisation and disable Twitch features

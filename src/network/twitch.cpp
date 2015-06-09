@@ -34,7 +34,11 @@ enum {
 	TWITCH_STATE_GET_FOLLOWERS,
 	TWITCH_STATE_GET_MESSAGES,
 	TWITCH_STATE_LEAVING,
-	TWITCH_STATE_LEFT
+	TWITCH_STATE_LEFT,
+    TWITCH_STATE_LOGGING_IN,
+    TWITCH_STATE_LOGGED_IN,
+    TWITCH_STATE_LOGGING_OUT,
+    TWITCH_STATE_LOGGED_OUT
 };
 
 // The time between HTTP requests.
@@ -42,7 +46,7 @@ enum {
 // have a lower latency.
 #define PULSE_TIME (10 * 1000)
 
-const char *TwitchExtendedBaseUrl = "http://openrct.ursalabs.co/api/1/";
+const char *TwitchExtendedBaseUrl = "https://openrct.ursalabs.co/api/1/";
 
 bool gTwitchEnable = false;
 
@@ -54,6 +58,9 @@ static http_json_response *_twitchJsonResponse;
 
 static void twitch_join();
 static void twitch_leave();
+static void twitch_login();
+static void twitch_logout();
+
 static void twitch_get_followers();
 static void twitch_get_messages();
 
@@ -117,6 +124,47 @@ void twitch_update()
 		if (_twitchState != TWITCH_STATE_LEFT)
 			twitch_leave();
 	}
+}
+
+void twitch_login(utf8string channel, utf8string password)
+{
+    if (!_twitchIdle)
+        return;
+
+    char url[256];
+    char data[256];
+    sprintf(url, "%sautoAuth", TwitchExtendedBaseUrl);
+    sprintf(data, "name=%s&password=%s", channel, password);
+
+    _twitchState = TWITCH_STATE_LOGGING_IN;
+    _twitchIdle = false;
+    http_post_json_async(url, data, [](http_json_response *jsonResponse) -> void {
+        if (jsonResponse == NULL) {
+            _twitchState = TWITCH_STATE_LOGGED_OUT;
+            console_writeline("Unable to login with Twitch.");
+        }
+        else {
+            json_t *jsonStatus = json_object_get(jsonResponse->root, "status");
+            if (json_is_number(jsonStatus) && json_integer_value(jsonStatus) == 200) {
+                _twitchState = TWITCH_STATE_LOGGED_IN;
+
+            } else {
+                _twitchState = TWITCH_STATE_LOGGED_OUT;
+
+            }
+            http_request_json_dispose(jsonResponse);
+
+            _twitchLastPulseTick = 0;
+            console_writeline("Logged in with Twitch.");
+        }
+        _twitchIdle = true;
+    });
+}
+
+void twitch_logout()
+{
+    if (!_twitchIdle)
+        return;
 }
 
 /**
