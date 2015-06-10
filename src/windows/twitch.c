@@ -24,13 +24,14 @@
 #include "../interface/widget.h"
 #include "../interface/window.h"
 #include "../config.h"
+#include "../network/twitch.h"
 
 enum window_twitch_WIDGET_IDX {
 	WIDX_BACKGROUND,
 	WIDX_TITLE,
 	WIDX_CLOSE,
 	WIDX_TWITCH_AUTH,
-    WIDX_TWITCH_DEAUTH,
+	WIDX_TWITCH_DEAUTH,
 	WINDOW_TWITCH_WIDGETS_SIZE
 };
 
@@ -39,7 +40,7 @@ rct_widget window_twitch_widgets[] = {
 	{ WWT_CAPTION, 0, 1, 398, 1, 14, STR_TWITCH_WINDOW_TITLE, STR_WINDOW_TITLE_TIP },	// title bar
 	{ WWT_CLOSEBOX, 0, 387, 397, 2, 13, STR_CLOSE_X, STR_CLOSE_WINDOW_TIP },	// close x button
 	{ WWT_DROPDOWN_BUTTON, 1, 100, 299, 53, 64, STR_TWITCH_AUTH, STR_TWITCH_AUTH_TIP },		// twitch auth
-    { WWT_DROPDOWN_BUTTON, 1, 100, 299, 53, 64, STR_TWITCH_DEAUTH, STR_TWITCH_DEAUTH_TIP },	// twitch deauth
+	{ WWT_DROPDOWN_BUTTON, 1, 100, 299, 53, 64, STR_TWITCH_DEAUTH, STR_TWITCH_DEAUTH_TIP },	// twitch deauth
 	{ WIDGETS_END },
 };
 
@@ -171,8 +172,10 @@ static void window_twitch_text_input(){
 	char *userName = multi_text_input;
 	char *password = multi_text_input2;
 
-    log_error(userName);
-    log_error(password);
+	log_info(userName);
+	log_info(password);
+
+	twitch_login(userName, password);
 }
 
 static void window_twitch_invalidate()

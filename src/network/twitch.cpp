@@ -35,10 +35,10 @@ enum {
 	TWITCH_STATE_GET_MESSAGES,
 	TWITCH_STATE_LEAVING,
 	TWITCH_STATE_LEFT,
-    TWITCH_STATE_LOGGING_IN,
-    TWITCH_STATE_LOGGED_IN,
-    TWITCH_STATE_LOGGING_OUT,
-    TWITCH_STATE_LOGGED_OUT
+	TWITCH_STATE_LOGGING_IN,
+	TWITCH_STATE_LOGGED_IN,
+	TWITCH_STATE_LOGGING_OUT,
+	TWITCH_STATE_LOGGED_OUT
 };
 
 // The time between HTTP requests.
@@ -145,6 +145,7 @@ void twitch_login(utf8string channel, utf8string password)
         }
         else {
             json_t *jsonStatus = json_object_get(jsonResponse->root, "status");
+			json_t *jsonToken = json_object_get(jsonResponse->root, "access_token");
             if (json_is_number(jsonStatus) && json_integer_value(jsonStatus) == 200) {
                 _twitchState = TWITCH_STATE_LOGGED_IN;
 

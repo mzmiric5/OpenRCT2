@@ -6,7 +6,7 @@
 extern bool gTwitchEnable;
 
 void twitch_update();
-void twitch_login();
+void twitch_login(utf8string channel, utf8string password);
 void twitch_logout();
 
 #endif
