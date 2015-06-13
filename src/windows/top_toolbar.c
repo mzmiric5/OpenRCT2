@@ -370,7 +370,7 @@ static void window_top_toolbar_mousedown(int widgetIndex, rct_window*w, rct_widg
 			numItems = 10;
 
 		#ifndef DISABLE_TWITCH
-			if (gConfigTwitch.channel != NULL && gConfigTwitch.channel[0] != 0) {
+			if (gConfigTwitch.channel != NULL && gConfigTwitch.channel[0] != 0 && gConfigTwitch.token != NULL && gConfigTwitch.token[0] != 0) {
 				_menuDropdownIncludesTwitch = true;
 				gDropdownItemsFormat[10] = 0;
 				gDropdownItemsFormat[11] = 1156;

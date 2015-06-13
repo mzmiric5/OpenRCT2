@@ -18,6 +18,7 @@ extern "C" {
 	#include "../addresses.h"
 	#include "../config.h"
 	#include "../interface/console.h"
+	#include "../interface/window.h"
 	#include "../localisation/localisation.h"
 	#include "../management/news_item.h"
 	#include "../peep/peep.h"
@@ -55,11 +56,10 @@ static bool _twitchIdle = true;
 static uint32 _twitchLastPulseTick = 0;
 static int _twitchLastPulseOperation = 1;
 static http_json_response *_twitchJsonResponse;
+static rct_window *_twitchWindow;
 
 static void twitch_join();
 static void twitch_leave();
-static void twitch_login();
-static void twitch_logout();
 
 static void twitch_get_followers();
 static void twitch_get_messages();
@@ -67,6 +67,11 @@ static void twitch_get_messages();
 static void twitch_parse_followers();
 static void twitch_parse_messages();
 static void twitch_parse_chat_message(const char *message);
+
+void twitch_setWindow(rct_window *w)
+{
+	_twitchWindow = w;
+}
 
 void twitch_update()
 {
@@ -76,6 +81,7 @@ void twitch_update()
 	bool twitchable =
 		!(RCT2_GLOBAL(RCT2_ADDRESS_SCREEN_FLAGS, uint8) & (~SCREEN_FLAGS_PLAYING)) &&
 		gConfigTwitch.channel != NULL &&
+		gConfigTwitch.token != NULL &&
 		gConfigTwitch.channel[0] != 0 &&
 		gTwitchEnable;
 
@@ -85,6 +91,7 @@ void twitch_update()
 
 		switch (_twitchState) {
 		case TWITCH_STATE_LEFT:
+		case TWITCH_STATE_LOGGED_IN:
 		{
 			uint32 currentTime = SDL_GetTicks();
 			uint32 timeSinceLastPulse = currentTime - _twitchLastPulseTick;
@@ -136,6 +143,11 @@ void twitch_login(utf8string channel, utf8string password)
     sprintf(url, "%sautoAuth", TwitchExtendedBaseUrl);
     sprintf(data, "name=%s&password=%s", channel, password);
 
+	if (gConfigTwitch.channel != NULL)
+		free(gConfigTwitch.channel);
+	gConfigTwitch.channel = _strdup(channel);
+	config_save_default();
+
     _twitchState = TWITCH_STATE_LOGGING_IN;
     _twitchIdle = false;
     http_post_json_async(url, data, [](http_json_response *jsonResponse) -> void {
@@ -145,13 +157,20 @@ void twitch_login(utf8string channel, utf8string password)
         }
         else {
             json_t *jsonStatus = json_object_get(jsonResponse->root, "status");
-			json_t *jsonToken = json_object_get(jsonResponse->root, "access_token");
             if (json_is_number(jsonStatus) && json_integer_value(jsonStatus) == 200) {
                 _twitchState = TWITCH_STATE_LOGGED_IN;
-
+				json_t *jsonToken = json_object_get(jsonResponse->root, "access_token");
+				log_info("%s", json_string_value(jsonToken));
+				if (gConfigTwitch.token != NULL)
+					free(gConfigTwitch.token);
+				gConfigTwitch.token = _strdup(json_string_value(jsonToken));
+				config_save_default();
             } else {
                 _twitchState = TWITCH_STATE_LOGGED_OUT;
-
+				if (gConfigTwitch.channel != NULL)
+					free(gConfigTwitch.channel);
+				gConfigTwitch.channel = NULL;
+				config_save_default();
             }
             http_request_json_dispose(jsonResponse);
 
@@ -159,6 +178,7 @@ void twitch_login(utf8string channel, utf8string password)
             console_writeline("Logged in with Twitch.");
         }
         _twitchIdle = true;
+		window_invalidate(_twitchWindow);
     });
 }
 
@@ -166,6 +186,18 @@ void twitch_logout()
 {
     if (!_twitchIdle)
         return;
+
+	if (gConfigTwitch.channel != NULL)
+		free(gConfigTwitch.token);
+	gConfigTwitch.token = NULL;
+
+	if (gConfigTwitch.channel != NULL)
+		free(gConfigTwitch.channel);
+	gConfigTwitch.channel = NULL;
+
+	config_save_default();
+
+	window_invalidate(_twitchWindow);
 }
 
 /**

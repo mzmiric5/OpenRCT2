@@ -1330,11 +1330,15 @@ void game_handle_keyboard_input()
 			tutorial_stop();
 		}
 		else {
+			rct_window *wMultiText;
+
 			w = window_find_by_class(WC_TEXTINPUT);
+			wMultiText = window_find_by_class(WC_MULTI_TEXTINPUT);
 			if (w != NULL){
 				((void(*)(int, rct_window*))w->event_handlers[WE_TEXT_INPUT])(key, w);
-			}
-			else if (!gUsingWidgetTextBox) {
+			} else if (wMultiText != NULL) {
+				((void(*)(int, rct_window*))wMultiText->event_handlers[WE_TEXT_INPUT])(key, wMultiText);
+			} else if (!gUsingWidgetTextBox) {
 				keyboard_shortcut_handle(key);
 			}
 		}
@@ -1553,9 +1557,11 @@ void game_handle_key_scroll()
 		return;
 
 	rct_window *textWindow;
+	rct_window *multiTextWindow;
 
 	textWindow = window_find_by_class(WC_TEXTINPUT);
-	if (textWindow || gUsingWidgetTextBox) return;
+	multiTextWindow = window_find_by_class(WC_MULTI_TEXTINPUT);
+	if (textWindow || multiTextWindow || gUsingWidgetTextBox) return;
 
 	scrollX = 0;
 	scrollY = 0;

@@ -37,7 +37,7 @@ static void widget_text_unknown(rct_drawpixelinfo *dpi, rct_window *w, int widge
 static void widget_text(rct_drawpixelinfo *dpi, rct_window *w, int widgetIndex);
 static void widget_text_inset(rct_drawpixelinfo *dpi, rct_window *w, int widgetIndex);
 static void widget_text_draw(rct_drawpixelinfo *dpi, rct_window *w, int widgetIndex);
-static void widget_text_box_draw(rct_drawpixelinfo *dpi, rct_window *w, int widgetIndex);
+static void widget_text_box_draw(rct_drawpixelinfo *dpi, rct_window *w, int widgetIndex, bool isMasked);
 static void widget_groupbox_draw(rct_drawpixelinfo *dpi, rct_window *w, int widgetIndex);
 static void widget_caption_draw(rct_drawpixelinfo *dpi, rct_window *w, int widgetIndex);
 static void widget_checkbox_draw(rct_drawpixelinfo *dpi, rct_window *w, int widgetIndex);
@@ -164,7 +164,10 @@ void widget_draw(rct_drawpixelinfo *dpi, rct_window *w, int widgetIndex)
 	case WWT_25:
 		break;
 	case WWT_TEXT_BOX:
-		widget_text_box_draw(dpi, w, widgetIndex);
+		widget_text_box_draw(dpi, w, widgetIndex, false);
+		break;
+	case WWT_MASKED_TEXT_BOX:
+		widget_text_box_draw(dpi, w, widgetIndex, true);
 		break;
 	}
 }
@@ -1137,7 +1140,7 @@ void widget_set_checkbox_value(rct_window *w, int widgetIndex, int value)
 		w->pressed_widgets &= ~(1ULL << widgetIndex);
 }
 
-static void widget_text_box_draw(rct_drawpixelinfo *dpi, rct_window *w, int widgetIndex)
+static void widget_text_box_draw(rct_drawpixelinfo *dpi, rct_window *w, int widgetIndex, bool isMasked)
 {
 	rct_widget* widget;
 	int l, t, r, b;
@@ -1181,6 +1184,13 @@ static void widget_text_box_draw(rct_drawpixelinfo *dpi, rct_window *w, int widg
 
 
 	strcpy(wrapped_string, gTextBoxInput);
+
+	if (isMasked) {
+		int charCount = strlen(gTextBoxInput);
+		for (int i = 0; i < charCount; i++) {
+			wrapped_string[i] = "*";
+		}
+	}
 
 	// String length needs to add 12 either side of box
 	// +13 for cursor when max length.

@@ -173,6 +173,7 @@ typedef struct {
 
 typedef struct {
 	utf8string channel;
+	utf8string token;
 	uint8 enable_follower_peep_names;
 	uint8 enable_follower_peep_tracking;
 	uint8 enable_chat_peep_names;
