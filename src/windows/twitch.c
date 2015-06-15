@@ -205,6 +205,12 @@ static void window_twitch_text_input(){
 
 	log_info("%s", text);
 
+	if (widgetIndex == WIDX_TWITCH_UNAME) {
+		strcpy(twitchUname, text);
+	} else if (widgetIndex == WIDX_TWITCH_PASS) {
+		strcpy(twitchPass, text);
+	}
+
 	char *userName = multi_text_input;
 	char *password = multi_text_input2;
 
