@@ -1176,8 +1176,20 @@ static void widget_text_box_draw(rct_drawpixelinfo *dpi, rct_window *w, int widg
 
 		if (w->widgets[widgetIndex].image != 0) {
 			strcpy(wrapped_string, (char*)w->widgets[widgetIndex].image);
-			gfx_wrap_string(wrapped_string, r - l - 5, &no_lines, &font_height);
-			gfx_draw_string(dpi, wrapped_string, w->colours[1], l + 2, t);
+			if (isMasked) {
+				int charCount = strlen((char*)w->widgets[widgetIndex].image);
+				char maskedWrappedString[512];
+				strcpy(maskedWrappedString, wrapped_string);
+				for (int i = 0; i < charCount; i++) {
+					maskedWrappedString[i] = '*';
+				}
+				gfx_wrap_string(maskedWrappedString, r - l - 5, &no_lines, &font_height);
+				gfx_draw_string(dpi, maskedWrappedString, w->colours[1], l + 2, t);
+			}
+			else {
+				gfx_wrap_string(wrapped_string, r - l - 5, &no_lines, &font_height);
+				gfx_draw_string(dpi, wrapped_string, w->colours[1], l + 2, t);
+			}
 		}
 		return;
 	}
