@@ -1182,13 +1182,12 @@ static void widget_text_box_draw(rct_drawpixelinfo *dpi, rct_window *w, int widg
 		return;
 	}
 
-
 	strcpy(wrapped_string, gTextBoxInput);
 
 	if (isMasked) {
 		int charCount = strlen(gTextBoxInput);
 		for (int i = 0; i < charCount; i++) {
-			wrapped_string[i] = "*";
+			wrapped_string[i] = '*';
 		}
 	}
 
